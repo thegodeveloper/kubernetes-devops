@@ -1,21 +1,21 @@
-FROM node:15 as builder
+FROM node:15 AS builder
 
-WORKDIR
+WORKDIR /usr/src/app
 
-COPY
+COPY package*.json ./
 
-RUN 
+RUN npm install
 
-COPY
+COPY . .
 
-RUN 
+RUN npm run build
 
-FROM
+FROM nginx:alpine
 
-WORKDIR
+WORKDIR /usr/share/nginx/html
 
-COPY
+COPY --from=builder /usr/src/app/build .
 
-RUN 
+EXPOSE 80
 
-ENTRYPOINT 
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

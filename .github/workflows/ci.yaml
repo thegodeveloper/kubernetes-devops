@@ -1,0 +1,46 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 15
+
+      - name: Change directory to application
+        run: cd codebase/rdicidr-0.1.0
+
+      - name: Install dependencies
+        working-directory: codebase/rdicidr-0.1.0
+        run: npm install
+
+      - name: Format the code
+        working-directory: codebase/rdicidr-0.1.0
+        run: |
+          npm install prettier --save-dev
+          npm run prettier -- --write
+
+      - name: Lint the code
+        working-directory: codebase/rdicidr-0.1.0
+        run: npm run lint
+
+      - name: Run tests
+        working-directory: codebase/rdicidr-0.1.0
+        env:
+          CI: true
+        run: npm run test
+
+      - name: Build the application
+        working-directory: codebase/rdicidr-0.1.0
+        run: npm run build
